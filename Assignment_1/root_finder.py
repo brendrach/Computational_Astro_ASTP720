@@ -78,7 +78,7 @@ def bisection(function, endpoint_a, endpoint_b, tolerance, maximum_iterations):
             print("We've reached our tolerance threshold of "+str(tolerance)+" in \
                   "+str(i)+" iterations.")
             print("The value of the root is " + str(c) + ".")
-            return(c)
+            return(c, i)
         
         ## If we reach our maximum number of iterations without converging, 
         ## we must've chosen a bad starting point.
@@ -123,7 +123,7 @@ def newton_method(function, function_derivative, starting_point, tolerance, maxi
             print("We've reached our tolerance threshold of "+str(tolerance)+" in \
                   "+str(i)+" iterations.")
             print("The value of the root is " + str(temp_x[i+1]) +".")
-            return(temp_x[i+1])
+            return(temp_x[i+1], i)
         
         ## If we reach our maximum number of iterations without converging, 
         ## we must've chosen a bad starting point or something else must be wrong!
@@ -173,7 +173,7 @@ def secant_method(function, starting_point, secondary_point, tolerance, maximum_
             print("We've reached our tolerance threshold of "+str(tolerance)+" in \
                   "+str(i)+" iterations.")
             print("The value of the root is " + str(temp_x[i+1]) +".")
-            return(temp_x[i+1])
+            return(temp_x[i+1], i)
         
         ## If we reach our maximum number of iterations without converging, 
         ## we must've chosen a bad starting point or something else must be wrong!
