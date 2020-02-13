@@ -30,8 +30,8 @@ def M(r , r_200 , v_200 , c):
 
 def problem_2():
     r_200 = 230 * u.kpc
-    v_200 = 200 * u.km / (u.s)
-    c = 15
+    v_200 = 250 * u.km / (u.s)
+    c = 8
     
     m_r = []
     m_enc = []
@@ -47,22 +47,28 @@ def problem_2():
         	m_enc.append(M_enc(i * u.kpc , r_200 , v_200 , c).value)
         
     plt.plot(np.linspace(0, 300, 301) , np.log10(m_r))
-    plt.xlabel("r (kpc)")
-    plt.ylabel("M(r) M_sun")
+    plt.title(r"$log(M(r)) \ vs \ r, \ c \ = \ $" + str(c) + r"$, \ v_{200} \ = \ $" + str(v_200))
+    plt.xlabel(r"$r \ (kpc)$")
+    plt.ylabel(r"$\log(M(r)) \ M_\odot$")
+    plt.savefig("v200_"+str(v_200.value)+"_c_"+str(c)+"_m.png")
     plt.show()
     
     plt.plot(x_grad , m_grad)
-    plt.xlabel("r (kpc)")
-    plt.ylabel("M'(r) M_sun")
+    plt.title(r"$log(\frac{d M(r)}{dr}) \ vs \ r, \ c \ = \ $" + str(c) + r"$, \ v_{200} \ = \ $" + str(v_200))
+    plt.xlabel(r"$r \ (kpc)$")
+    plt.ylabel(r"$log(\frac{d M(r)}{dr}) \ M_\odot$")
+    plt.savefig("v200_"+str(v_200.value)+"_c_"+str(c)+"_dmdr.png")
     plt.show()
     
     plt.plot(np.linspace(0, 300, 301) , np.log10(m_enc))
-    plt.xlabel("r (kpc)")
-    plt.ylabel("M_enc (r) M_sun")
+    plt.title(r"$log(M_{enc}(r)) \ vs \ r, \ c=$" + str(c) + r"$ \ , \ v_{200} \ = \ $" + str(v_200))
+    plt.xlabel(r"$r \ (kpc)$")
+    plt.ylabel(r"$\log(M_{enc}(r)) \ M_\odot$")
+    plt.savefig("v200_"+str(v_200.value)+"_c_"+str(c)+"_menc.png")
     plt.show()
     
-    Mtot = M_enc(1e8 * u.kpc , r_200 , v_200 , c)
-    print (np.log10(Mtot.value))
+    Mtot = M_enc(1e3 * u.kpc , r_200 , v_200 , c)
+    print (Mtot.value)
     
     print (M(5 * u.kpc , r_200 , v_200 , c))
 
