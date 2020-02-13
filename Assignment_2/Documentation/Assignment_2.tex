@@ -1,0 +1,58 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\graphicspath{ {.} }
+\usepackage{wrapfig}
+\usepackage{subfig}
+ 
+\title{ASTP-720 Assignment 2}
+\author{Brendan Drachler}
+\date{\today}
+
+\begin{document}
+
+\section*{Problem 1}
+
+My numerical calculus library is contained in {numerical\_calculus.py}.
+
+\section*{Problem 2}
+
+$M(r)$, $\frac{d M(r)}{dr}$, and $M_{enc}(r)$ are all shown below for varying values of $c$ and $v_{200}$. One obvious thing worth noting is that higher $c$ values have a drastic impact on the mass at larger radii. In the case of $c=15$, the mass at large radii falls off much quicker. 
+
+\begin{figure}[ht]
+\begin{tabular}{ccc}
+\includegraphics[width=50mm]{{v200_150.0_c_8_m}.png} &   \includegraphics[width=50mm]{{v200_150.0_c_8_dmdr}.png} &  \includegraphics[width=50mm]{{v200_150.0_c_8_menc}.png} \\
+
+\includegraphics[width=50mm]{{v200_150.0_c_15_m}.png} &   \includegraphics[width=50mm]{{v200_150.0_c_15_dmdr}.png} &  \includegraphics[width=50mm]{{v200_150.0_c_15_menc}.png} \\
+\end{tabular}
+\caption{$M(r)$, $\frac{d M(r)}{dr}$, and $M_{enc}(r)$ for $c=8,15$ and $v_{200} = 150 km/s$}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{tabular}{ccc}
+\includegraphics[width=50mm]{{v200_200.0_c_8_m}.png} &   \includegraphics[width=50mm]{{v200_200.0_c_8_dmdr}.png} &  \includegraphics[width=50mm]{{v200_200.0_c_8_menc}.png} \\
+
+\includegraphics[width=50mm]{{v200_200.0_c_15_m}.png} &   \includegraphics[width=50mm]{{v200_200.0_c_15_dmdr}.png} &  \includegraphics[width=50mm]{{v200_200.0_c_15_menc}.png} \\
+\end{tabular}
+\caption{$M(r)$, $\frac{d M(r)}{dr}$, and $M_{enc}(r)$ for $c=8,15$ and $v_{200} = 200 km/s$}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{tabular}{ccc}
+\includegraphics[width=50mm]{{v200_250.0_c_8_m}.png} &   \includegraphics[width=50mm]{{v200_250.0_c_8_dmdr}.png} &  \includegraphics[width=50mm]{{v200_250.0_c_8_menc}.png} \\
+
+\includegraphics[width=50mm]{{v200_250.0_c_15_m}.png} &   \includegraphics[width=50mm]{{v200_250.0_c_15_dmdr}.png} &  \includegraphics[width=50mm]{{v200_250.0_c_15_menc}.png} \\
+\end{tabular}
+\caption{$M(r)$, $\frac{d M(r)}{dr}$, and $M_{enc}(r)$ for $c=8,15$ and $v_{200} = 250 km/s$}
+\end{figure}
+
+I also used my code to calculate the mass of the dark matter halo, assuming the radial extent of the Milky Way's luminous matter is $15 \ kpc$ and the radius of the dark matter halo is $100 \ kpc$, to be $1.681 10^{12} M_\odot$. 
+
+\section*{Problem 3}
+
+The library of matrix functions can be found in {matrix.py}.
+
+\section*{Problem 4}
+The unittest features are stored in matrix\_test.py. Running the script will automatically test matrix.py.
+
+\end{document}
