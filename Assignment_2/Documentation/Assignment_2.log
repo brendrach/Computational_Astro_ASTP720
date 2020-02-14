@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  13 FEB 2020 12:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  13 FEB 2020 20:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -186,118 +186,118 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 <v200_150.0_c_8_m.png, id=1, 433.62pt x 289.08pt>
 File: v200_150.0_c_8_m.png Graphic file (type png)
 <use v200_150.0_c_8_m.png>
-Package pdftex.def Info: v200_150.0_c_8_m.png  used on input line 24.
+Package pdftex.def Info: v200_150.0_c_8_m.png  used on input line 34.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_150.0_c_8_dmdr.png, id=3, 433.62pt x 289.08pt>
 File: v200_150.0_c_8_dmdr.png Graphic file (type png)
 <use v200_150.0_c_8_dmdr.png>
-Package pdftex.def Info: v200_150.0_c_8_dmdr.png  used on input line 24.
+Package pdftex.def Info: v200_150.0_c_8_dmdr.png  used on input line 34.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_150.0_c_8_menc.png, id=4, 433.62pt x 289.08pt>
 File: v200_150.0_c_8_menc.png Graphic file (type png)
 <use v200_150.0_c_8_menc.png>
-Package pdftex.def Info: v200_150.0_c_8_menc.png  used on input line 24.
+Package pdftex.def Info: v200_150.0_c_8_menc.png  used on input line 34.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_150.0_c_15_m.png, id=5, 433.62pt x 289.08pt>
 File: v200_150.0_c_15_m.png Graphic file (type png)
 <use v200_150.0_c_15_m.png>
-Package pdftex.def Info: v200_150.0_c_15_m.png  used on input line 26.
+Package pdftex.def Info: v200_150.0_c_15_m.png  used on input line 36.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_150.0_c_15_dmdr.png, id=6, 433.62pt x 289.08pt>
 File: v200_150.0_c_15_dmdr.png Graphic file (type png)
 <use v200_150.0_c_15_dmdr.png>
-Package pdftex.def Info: v200_150.0_c_15_dmdr.png  used on input line 26.
+Package pdftex.def Info: v200_150.0_c_15_dmdr.png  used on input line 36.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_150.0_c_15_menc.png, id=7, 433.62pt x 289.08pt>
 File: v200_150.0_c_15_menc.png Graphic file (type png)
 <use v200_150.0_c_15_menc.png>
-Package pdftex.def Info: v200_150.0_c_15_menc.png  used on input line 26.
+Package pdftex.def Info: v200_150.0_c_15_menc.png  used on input line 36.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 
-Overfull \hbox (72.79134pt too wide) in paragraph at lines 23--28
+Overfull \hbox (72.79134pt too wide) in paragraph at lines 33--38
 [][] 
  []
 
 <v200_200.0_c_8_m.png, id=8, 433.62pt x 289.08pt>
 File: v200_200.0_c_8_m.png Graphic file (type png)
 <use v200_200.0_c_8_m.png>
-Package pdftex.def Info: v200_200.0_c_8_m.png  used on input line 33.
+Package pdftex.def Info: v200_200.0_c_8_m.png  used on input line 43.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_200.0_c_8_dmdr.png, id=9, 433.62pt x 289.08pt>
 File: v200_200.0_c_8_dmdr.png Graphic file (type png)
 <use v200_200.0_c_8_dmdr.png>
-Package pdftex.def Info: v200_200.0_c_8_dmdr.png  used on input line 33.
+Package pdftex.def Info: v200_200.0_c_8_dmdr.png  used on input line 43.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_200.0_c_8_menc.png, id=10, 433.62pt x 289.08pt>
 File: v200_200.0_c_8_menc.png Graphic file (type png)
 <use v200_200.0_c_8_menc.png>
-Package pdftex.def Info: v200_200.0_c_8_menc.png  used on input line 33.
+Package pdftex.def Info: v200_200.0_c_8_menc.png  used on input line 43.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_200.0_c_15_m.png, id=11, 433.62pt x 289.08pt>
 File: v200_200.0_c_15_m.png Graphic file (type png)
 <use v200_200.0_c_15_m.png>
-Package pdftex.def Info: v200_200.0_c_15_m.png  used on input line 35.
+Package pdftex.def Info: v200_200.0_c_15_m.png  used on input line 45.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_200.0_c_15_dmdr.png, id=12, 433.62pt x 289.08pt>
 File: v200_200.0_c_15_dmdr.png Graphic file (type png)
 <use v200_200.0_c_15_dmdr.png>
-Package pdftex.def Info: v200_200.0_c_15_dmdr.png  used on input line 35.
+Package pdftex.def Info: v200_200.0_c_15_dmdr.png  used on input line 45.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_200.0_c_15_menc.png, id=13, 433.62pt x 289.08pt>
 File: v200_200.0_c_15_menc.png Graphic file (type png)
 <use v200_200.0_c_15_menc.png>
-Package pdftex.def Info: v200_200.0_c_15_menc.png  used on input line 35.
+Package pdftex.def Info: v200_200.0_c_15_menc.png  used on input line 45.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 
-Overfull \hbox (72.79134pt too wide) in paragraph at lines 32--37
+Overfull \hbox (72.79134pt too wide) in paragraph at lines 42--47
 [][] 
  []
 
 <v200_250.0_c_8_m.png, id=14, 433.62pt x 289.08pt>
 File: v200_250.0_c_8_m.png Graphic file (type png)
 <use v200_250.0_c_8_m.png>
-Package pdftex.def Info: v200_250.0_c_8_m.png  used on input line 42.
+Package pdftex.def Info: v200_250.0_c_8_m.png  used on input line 52.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_250.0_c_8_dmdr.png, id=15, 433.62pt x 289.08pt>
 File: v200_250.0_c_8_dmdr.png Graphic file (type png)
 <use v200_250.0_c_8_dmdr.png>
-Package pdftex.def Info: v200_250.0_c_8_dmdr.png  used on input line 42.
+Package pdftex.def Info: v200_250.0_c_8_dmdr.png  used on input line 52.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_250.0_c_8_menc.png, id=16, 433.62pt x 289.08pt>
 File: v200_250.0_c_8_menc.png Graphic file (type png)
 <use v200_250.0_c_8_menc.png>
-Package pdftex.def Info: v200_250.0_c_8_menc.png  used on input line 42.
+Package pdftex.def Info: v200_250.0_c_8_menc.png  used on input line 52.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_250.0_c_15_m.png, id=17, 433.62pt x 289.08pt>
 File: v200_250.0_c_15_m.png Graphic file (type png)
 <use v200_250.0_c_15_m.png>
-Package pdftex.def Info: v200_250.0_c_15_m.png  used on input line 44.
+Package pdftex.def Info: v200_250.0_c_15_m.png  used on input line 54.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_250.0_c_15_dmdr.png, id=18, 433.62pt x 289.08pt>
 File: v200_250.0_c_15_dmdr.png Graphic file (type png)
 <use v200_250.0_c_15_dmdr.png>
-Package pdftex.def Info: v200_250.0_c_15_dmdr.png  used on input line 44.
+Package pdftex.def Info: v200_250.0_c_15_dmdr.png  used on input line 54.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 <v200_250.0_c_15_menc.png, id=19, 433.62pt x 289.08pt>
 File: v200_250.0_c_15_menc.png Graphic file (type png)
 <use v200_250.0_c_15_menc.png>
-Package pdftex.def Info: v200_250.0_c_15_menc.png  used on input line 44.
+Package pdftex.def Info: v200_250.0_c_15_menc.png  used on input line 54.
 (pdftex.def)             Requested size: 142.26378pt x 94.8409pt.
 
-Overfull \hbox (72.79134pt too wide) in paragraph at lines 41--46
+Overfull \hbox (72.79134pt too wide) in paragraph at lines 51--56
 [][] 
  []
 
 [1
 
-{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./v200_
-150.0_c_8_m.png> <./v200_150.0_c_8_dmdr.png> <./v200_150.0_c_8_menc.png> <./v20
-0_150.0_c_15_m.png> <./v200_150.0_c_15_dmdr.png> <./v200_150.0_c_15_menc.png>] 
-[2 <./v200_200.0_c_8_m.png> <./v200_200.0_c_8_dmdr.png> <./v200_200.0_c_8_menc.
-png> <./v200_200.0_c_15_m.png> <./v200_200.0_c_15_dmdr.png> <./v200_200.0_c_15_
-menc.png>] [3 <./v200_250.0_c_8_m.png> <./v200_250.0_c_8_dmdr.png> <./v200_250.
-0_c_8_menc.png> <./v200_250.0_c_15_m.png> <./v200_250.0_c_15_dmdr.png> <./v200_
-250.0_c_15_menc.png>] (./Assignment_2.aux) ) 
+{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+[2 <./v200_150.0_c_8_m.png> <./v200_150.0_c_8_dmdr.png> <./v200_150.0_c_8_menc.
+png> <./v200_150.0_c_15_m.png> <./v200_150.0_c_15_dmdr.png> <./v200_150.0_c_15_
+menc.png> <./v200_200.0_c_8_m.png> <./v200_200.0_c_8_dmdr.png> <./v200_200.0_c_
+8_menc.png> <./v200_200.0_c_15_m.png> <./v200_200.0_c_15_dmdr.png> <./v200_200.
+0_c_15_menc.png>] [3 <./v200_250.0_c_8_m.png> <./v200_250.0_c_8_dmdr.png> <./v2
+00_250.0_c_8_menc.png> <./v200_250.0_c_15_m.png> <./v200_250.0_c_15_dmdr.png> <
+./v200_250.0_c_15_menc.png>] (./Assignment_2.aux) ) 
 Here is how much of TeX's memory you used:
  2847 strings out of 492616
  46555 string characters out of 6129482
@@ -305,15 +305,15 @@ Here is how much of TeX's memory you used:
  6742 multiletter control sequences out of 15000+600000
  6982 words of font info for 25 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,11n,42p,320b,318s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2019/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2019/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2019/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2019/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2019/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2019/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmsy8.pfb>
-Output written on Assignment_2.pdf (3 pages, 279199 bytes).
+ 44i,11n,42p,430b,318s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2019/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2019/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2019/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2019/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2019/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2019/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on Assignment_2.pdf (3 pages, 279057 bytes).
 PDF statistics:
  75 PDF objects out of 1000 (max. 8388607)
  27 compressed objects within 1 object stream
