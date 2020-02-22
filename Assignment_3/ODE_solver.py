@@ -55,23 +55,7 @@ def rk4_method(func, y0, x, dx):
         y[i] = y[i-1] + 1/6*(k1 + 2*k2 + 2*k3 + k4)
        
     return y
-    
 
-def WD_euler_method(func1, func1_start, func2_start, dx):
-    
-    r = [0]
-    M_enc = [func1_start]
-    P_r = [func2_start]
-    
-    i = 0
-    while P_r[i] > 0.00001:
-        
-        r.append(r[i] + dx)
-        M_enc.append(M_enc[i] + dx * dm_dr(r[i], P_r[i], "WD"))
-        P_r.append()        
-
-    
-    return 
     
 
 def dm_dr(r, pressure, stellar_type):
