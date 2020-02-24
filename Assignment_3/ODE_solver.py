@@ -23,12 +23,18 @@ def calc_density(pressure, stellar_type):
     return density
         
 
-def euler_method(func, y0, x, dx):    
-    y = np.zeros(len(x))
-    y[0] = y0
+def euler_method(func, y0, x, dx):   
+    
+    if isinstance(y0, int) or isinstance(y0, float):
+        y0 = [y0]
+        
+    y = np.zeros((len(x), len(y0[:])))
+        
+    for i in range(len(y0)):
+        y[0,i] = y0[i]
     
     for i in range(1, len(x)):
-        y[i] = y[i-1] + dx * func(x[i-1], y[i-1])
+        y[i,:] = y[i-1,:] + np.multiply(dx, func(x[i-1], y[i-1,:]))
             
     return y
         
@@ -44,17 +50,27 @@ def heuns_method(func, y0, x, dx):
         
 
 def rk4_method(func, y0, x, dx):
-    y = np.zeros(len(x))
-    y[0] = y0
     
+    
+    if isinstance(y0, int) or isinstance(y0, float):
+        y0 = [y0]
+        
+    y = np.zeros((len(x), len(y0[:])))
+        
+    for i in range(len(y0)):
+        y[0,i] = y0[i]
+            
     for i in range(1, len(x)):
-        k1 = dx * func(x[i-1], y[i-1])
-        k2 = dx * func(x[i-1] + dx/2, y[i-1] + k1/2)
-        k3 = dx * func(x[i-1] + dx/2, y[i-1] + k2/2)
-        k4 = dx * func(x[i-1] + dx, y[i-1] + k3)
-        y[i] = y[i-1] + 1/6*(k1 + 2*k2 + 2*k3 + k4)
+        k1 = np.multiply(dx, func(x[i-1], y[i-1,:]))
+        k2 = np.multiply(dx, func(x[i-1] + dx/2, y[i-1,:] + k1/2))
+        k3 = np.multiply(dx, func(x[i-1] + dx/2, y[i-1,:] + k2/2))
+        k4 = np.multiply(dx, func(x[i-1] + dx, y[i-1, :] + k3))
+        y[i, :] = np.add(y[i-1, :], 1/6*(k1 + 2*k2 + 2*k3 + k4))
+            
+        print(i)
        
     return y
+    
 
     
 
