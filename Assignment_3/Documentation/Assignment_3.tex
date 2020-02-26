@@ -11,6 +11,8 @@
 
 \begin{document}
 
+\maketitle
+
 \section*{Problem 1}
 
 My ODE solver library is located in ODE\_solver.py.
@@ -31,8 +33,6 @@ Odeint gives the following solution:
 \includegraphics{{odeint_pendulum}.png}
 
 Now, we can use the ODE library I wrote to solve the same set of equations as a validation tool for the solvers.
-
-\newpage
 
 \begin{figure}[ht]
 \centering
@@ -68,11 +68,15 @@ We will compare our numerical solution to the analytical solution that takes the
 y(t) = -\frac{\lambda^2}{1 + \lambda^2} e^{-\lambda t} + \frac{\lambda}{1 + \lambda^2} \sin(t) + \frac{\lambda^2}{1 + \lambda^2} \cos(t)
 \end{equation}
 
-I've tried solving the ODE for values of $\lambda$ ranging from 1 to 100 but my numerical solvers all struggle with it. I've also seen various online resources that claim stiff ODEs can sometimes be solved with explicit methods if the timestep is sufficiently small. Therefore, I've tried varying $dx$ from $0.01$ to $10^{-8}$ but still cannot solve this ODE. 
+With $\lambda = 15$, I was able to solve the stiff ODE with all 3 numerical schemes. 
 
-My numerical solvers are able to "hang on" for a little, but eventually diverge from the solution. All 3 solvers struggle with this function and no particular scheme seems to do better than the rest.
+\includegraphics{stiff_EQ.png}
 
-\includegraphics{stiff_EQ_Failure.png}
+This plot doesn't address the question of which numerical integrator performs best. We can plot the absolute error between the exact solution and the numerical solution to visualize how each method performs. 
+
+\includegraphics{stiff_EQ_error.png}
+
+Clearly, rk4 performs the best with the given parameters. This may change based on how stiff the ODE is or on the timestep used in the numerical integrators.
 
 \newpage
 

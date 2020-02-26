@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  25 FEB 2020 11:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  26 FEB 2020 10:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -178,21 +178,24 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 22.
+(Font)              <14.4> on input line 14.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 22.
+(Font)              <7> on input line 14.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 22.
+(Font)              <12> on input line 24.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 24.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 24.
 <odeint_pendulum.png, id=1, 371.3875pt x 262.9825pt>
 File: odeint_pendulum.png Graphic file (type png)
 <use odeint_pendulum.png>
-Package pdftex.def Info: odeint_pendulum.png  used on input line 31.
+Package pdftex.def Info: odeint_pendulum.png  used on input line 33.
 (pdftex.def)             Requested size: 371.38658pt x 262.98184pt.
 
 [1
 
-{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./odein
-t_pendulum.png>]
+{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 <euler_pendulum.png, id=13, 316.18124pt x 224.84pt>
 File: euler_pendulum.png Graphic file (type png)
 <use euler_pendulum.png>
@@ -218,57 +221,68 @@ File: RK4_vs_odeint.png Graphic file (type png)
 <use RK4_vs_odeint.png>
 Package pdftex.def Info: RK4_vs_odeint.png  used on input line 47.
 (pdftex.def)             Requested size: 307.14674pt x 224.83945pt.
-[2 <./euler_pendulum.png> <./heuns_pendulum.png> <./rk4_pendulum.png> <./RK4_vs
-_odeint.png>]
-<stiff_EQ_Failure.png, id=26, 387.4475pt x 262.9825pt>
-File: stiff_EQ_Failure.png Graphic file (type png)
-<use stiff_EQ_Failure.png>
-Package pdftex.def Info: stiff_EQ_Failure.png  used on input line 75.
+[2 <./odeint_pendulum.png> <./euler_pendulum.png> <./heuns_pendulum.png> <./rk4
+_pendulum.png>]
+<stiff_EQ.png, id=24, 387.4475pt x 262.9825pt>
+File: stiff_EQ.png Graphic file (type png)
+<use stiff_EQ.png>
+Package pdftex.def Info: stiff_EQ.png  used on input line 73.
 (pdftex.def)             Requested size: 387.44655pt x 262.98184pt.
 
-Overfull \hbox (15.07137pt too wide) in paragraph at lines 75--76
+Overfull \hbox (15.07137pt too wide) in paragraph at lines 73--74
 [][] 
  []
 
-[3 <./stiff_EQ_Failure.png>]
-<WD_R_vs_M.png, id=32, 416.55624pt x 298.11375pt>
+[3 <./RK4_vs_odeint.png>]
+<stiff_EQ_error.png, id=32, 400.49625pt x 262.9825pt>
+File: stiff_EQ_error.png Graphic file (type png)
+<use stiff_EQ_error.png>
+Package pdftex.def Info: stiff_EQ_error.png  used on input line 77.
+(pdftex.def)             Requested size: 400.49527pt x 262.98184pt.
+
+Overfull \hbox (28.12009pt too wide) in paragraph at lines 77--78
+[][] 
+ []
+
+[4 <./stiff_EQ.png>] [5 <./stiff_EQ_error.png>]
+<WD_R_vs_M.png, id=41, 416.55624pt x 298.11375pt>
 File: WD_R_vs_M.png Graphic file (type png)
 <use WD_R_vs_M.png>
-Package pdftex.def Info: WD_R_vs_M.png  used on input line 82.
+Package pdftex.def Info: WD_R_vs_M.png  used on input line 86.
 (pdftex.def)             Requested size: 416.55522pt x 298.11302pt.
 
-Overfull \hbox (44.18004pt too wide) in paragraph at lines 82--83
+Overfull \hbox (44.18004pt too wide) in paragraph at lines 86--87
 [][] 
  []
 
-<NS_M_vs_R.png, id=33, 416.55624pt x 297.11pt>
+<NS_M_vs_R.png, id=42, 416.55624pt x 297.11pt>
 File: NS_M_vs_R.png Graphic file (type png)
 <use NS_M_vs_R.png>
-Package pdftex.def Info: NS_M_vs_R.png  used on input line 90.
+Package pdftex.def Info: NS_M_vs_R.png  used on input line 94.
 (pdftex.def)             Requested size: 416.55522pt x 297.10927pt.
 
-Overfull \hbox (44.18004pt too wide) in paragraph at lines 90--91
+Overfull \hbox (44.18004pt too wide) in paragraph at lines 94--95
 [][] 
  []
 
-[4 <./WD_R_vs_M.png>]
-Overfull \hbox (13.07428pt too wide) in paragraph at lines 92--93
+[6 <./WD_R_vs_M.png>]
+Overfull \hbox (13.07428pt too wide) in paragraph at lines 96--97
 \OT1/cmr/m/n/12 in the lit-er-a-ture many times (found here: https://arxiv.org/
 pdf/1205.6871.pdf): 
  []
 
-<NS_lit.png, id=38, 366.36874pt x 344.28625pt>
+<NS_lit.png, id=47, 366.36874pt x 344.28625pt>
 File: NS_lit.png Graphic file (type png)
 <use NS_lit.png>
-Package pdftex.def Info: NS_lit.png  used on input line 94.
+Package pdftex.def Info: NS_lit.png  used on input line 98.
 (pdftex.def)             Requested size: 366.36784pt x 344.2854pt.
-[5 <./NS_M_vs_R.png>] [6 <./NS_lit.png>] (./Assignment_3.aux) ) 
+[7 <./NS_M_vs_R.png>] [8 <./NS_lit.png>] (./Assignment_3.aux) ) 
 Here is how much of TeX's memory you used:
- 2801 strings out of 492616
- 45061 string characters out of 6129482
+ 2812 strings out of 492616
+ 45228 string characters out of 6129482
  109382 words of memory out of 5000000
- 6705 multiletter control sequences out of 15000+600000
- 6982 words of font info for 25 fonts, out of 8000000 for 9000
+ 6715 multiletter control sequences out of 15000+600000
+ 8194 words of font info for 29 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  44i,11n,42p,416b,320s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texl
@@ -276,13 +290,14 @@ ive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texli
 ve/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texliv
 e/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/
 2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/20
-19/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2019/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2019/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on Assignment_3.pdf (6 pages, 279309 bytes).
+19/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2019
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2019/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2019/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on Assignment_3.pdf (8 pages, 307177 bytes).
 PDF statistics:
- 70 PDF objects out of 1000 (max. 8388607)
- 36 compressed objects within 1 object stream
+ 84 PDF objects out of 1000 (max. 8388607)
+ 45 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 46 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 
