@@ -337,7 +337,7 @@ class Tree:
             
             
             
-        def update_acceleration(self, node, galaxy):
+        def update_acceleration(self, Node, galaxy):
             '''
             Summary:
             Takes in a node and a particular galaxy and calculates the gravitational
@@ -395,7 +395,7 @@ class Tree:
             ## node is close enough, we will calculate the individual masses of the galaxies
             ## in it or its sub nodes (children).
             elif len(Node.children) > 0:
-                for sub_node in node.children:
+                for sub_node in Node.children:
                     
                     ## Calculate r_vector in each direction.
                     r_x = sub_node.com[0] - galaxy.x
