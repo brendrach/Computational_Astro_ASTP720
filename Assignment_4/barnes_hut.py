@@ -1,21 +1,13 @@
 import numpy as np
 import astropy.constants as const
 import astropy.units as u
+from cosmolopy import constants
 
-galaxies_t0 = np.load('galaxies0.npy')
-
-max_x = np.max(galaxies_t0[:,0]) + 1
-min_x = np.min(galaxies_t0[:,0]) - 1
-
-max_y = np.max(galaxies_t0[:,1]) + 1
-min_y = np.min(galaxies_t0[:,1]) - 1
-
-max_z = np.max(galaxies_t0[:,2]) + 1
-min_z = np.min(galaxies_t0[:,2]) - 1
-
-init_side_len = (max_x, max_y, max_z)
-
-
+## The value of G in proper units. I've used
+## the package cosmolopy which has this particular
+## unit system built in. This is more convenient than
+## converting astropy's G to the correct unit system.
+G = constants.G_const_Mpc_Msun_s
 
 class galaxy:
     
@@ -40,7 +32,7 @@ class galaxy:
         
 class Node:
     
-    def __init__(self, x_min, y_min, z_min, x_max, y_max, z_max, parent=None, children=None):
+    def __init__(self, x_min, y_min, z_min, x_max, y_max, z_max, gals=None, parent):
         '''
         Summary:
         Initializes a node (cube) with corner (x,y,z) that extends in
@@ -51,7 +43,7 @@ class Node:
         xyz_min : the minimum range of the global tree
         xyz_max : the maximum range of the global tree
         parent : the parent node.
-        children : the number of children the node has.
+        gals : the number of galaxies the node has.
         '''
         
         
@@ -74,8 +66,9 @@ class Node:
         ## The list of galaxies in the node.
         self.galaxies = []
         
-        if parent is not None:
-            self.parent = parent
+        self.parent = parent
+            
+        self.gals = gals
         
         
     def insert_galaxy(self, galaxy):
@@ -220,17 +213,27 @@ class Tree:
         y_min = parent.y_min
         z_min = parent.z_min
         
-        ## The length of the node.
-        half_length = parent.l / 2
+        l = parent.l
         
-        ## The midpoint of each node.
-        midpoint_x = x_min + half_length
-        midpoint_y = y_min + half_length
-        midpoint_z = z_min + half_length
+        ## Load the galaxies in the parent. 
+        gal_x = self.galaxies_x 
+        gal_y = self.galaxies_y
+        gal_z = self.galaxies_z 
         
-        ## in the cube, I will refer to the x axis as going from left to right
-        ## y axis in to out
-        ## z axis up to down.
+        ## We will be looping over the list of galaxies a lot 
+        ## so it is useful to define this.
+        len_gal = len(galaxy_x_coords)
+        
+        ## In the cube, I will denote the quantities in the following way: 
+        ## x axis as going from left to right.
+        ## y axis as going from in to out.
+        ## z axis as going from down to up.
+        ## If this is confusing, trying reading my description again
+        ## while looking at a 3D cube. Good example here:
+        ## https://www.researchgate.net/figure/Cube-ABCD-EFGH-on-3D-coordinate-axis-with-a-length-of-the-edge-in-4-units_fig1_323231999
+        ## Therefore, a description like l_i_d means the quadrant of the 
+        ## cube that is on the (x = left, y = inner, z = down) boundary. Or more
+        ## aptly written, the sub-node on the lower left side of the parent.
         
         ## so we will have 8 quadrants, denoted 
         ## l_i_d
@@ -242,19 +245,87 @@ class Tree:
         ## r_o_d
         ## r_o_u
         
-        l_i_d = 0 #Node(x, y, z, half_length)
+        ## Initially, I spent some time trying to vectorize this. 
+        ## I'm sure it could be done, but it seems the brute force
+        ## method is the best way for me to attack this. 
         
-        for i in range(len()) 
+        l_i_d = 0 
+        for i in range(len_gal):
+            if x_min <= gal_x[i] and gal_x[i] < x_min + l/2 and \
+               y_min <= gal_y[i] and gal_y[i] < y_min + l/2 and \
+               z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
+                   l_i_d = l_i_d + 1    
+        if l_i_d != 0:
+            parent.insert_node(Node(x_min, y_min, z_min, x_min+l/2, y_min+l/2, z_min+l/2, parent=parent, children=l_i_d))
+            parent.gals += l_i_d
+            
+            
+        r_i_d = 0
+        for i in range(len_gal):
+            if x_min + l/2 <= gal_x[i] and gal_x[i] < x_min + l and \
+               y_min <= gal_y[i] and gal_y[i] < y_min + l/2 and \
+               z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
+                   r_i_d = r_i_d + 1
+        if r_i_d != 0:
+            parent.insert_node(Node(x_min+l/2, y_min, z_min, x_min+l, y_min+l/2, z_min+l/2, parent=parent, children=r_i_d))
+            parent.gals += r_i_d
+            
+           
+        r_i_u = 0
+        for i in range(len_gal):
+            if x_min + l/2 <= gal_x[i] and gal_x[i] < x_min + l and \
+               y_min <= gal_y[i] and gal_y[i] < y_min + l/2 and \
+               z_min + l/2 <= gal_z[i] and gal_z[i] < z_min + l :
+                   r_i_u = r_i_u + 1
+        if r_i_u != 0:
+            parent.insert_node(Node(x_min+l/2, y_min, z_min+l/2, x_min+l, y_min+l/2, z_min+l, parent=parent, children=r_i_u))
+            parent.gals += r_i_u
         
-        l_i_u = 0 #Node(x, y, z+half_length, half_length)
-        r_i_d = 0 #Node(x+half_length, y, z, half_length)
-        r_i_u = 0 #Node(x+half_length, y, z+half_length, half_length)
-        l_o_d = 0 #Node(x, y+half_length, z, half_length)
-        l_o_u = 0 #Node(x, y+half_length, z+half_length, half_length)
-        r_o_d = 0 #Node(x+half_length, y+half_length, z, half_length)
-        r_o_u = 0 #Node(x+half_length, y+half_length, z+half_length, half_length)
+
+        l_o_d = 0
+        for i in range(len_gal):
+            if x_min <= gal_x[i] and gal_x[i] < x_min + l/2 and \
+               y_min + l/2 <= gal_y[i] and gal_y[i] < y_min + l and \
+               z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
+                   l_o_d = l_o_d + 1
+        if l_o_d != 0:
+            parent.insert_node(Node(x_min, y_min+l/2, z_min, x_min+l/2, y_min+l, z_min+l/2, parent=parent, children=l_o_d))
+            parent.gals += l_o_d
+            
+            
+        l_o_u = 0
+        for i in range(len_gal):
+            if x_min <= gal_x[i] and gal_x[i] < x_min + l/2 and \
+               y_min + l/2 <= gal_y[i] and gal_y[i] < y_min + l and \
+               z_min + l/2 <= gal_z[i] and gal_z[i] < z_min + l :
+                   l_o_u = l_o_u + 1
+        if l_o_u != 0:
+            parent.insert_node(Node(x_min, y_min+l/2, z_min+l/2, x_min+l/2, y_min+l, z_min+l, parent=parent, children=l_o_u))
+            parent.gals += l_o_u
+            
+        
+        r_o_d = 0
+        for i in range(len_gal):
+            if x_min + l/2 <= gal_x[i] and gal_x[i] < x_min + l and \
+               y_min + l/2 <= gal_y[i] and gal_y[i] < y_min + l and \
+               z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
+                   r_o_d = r_o_d + 1
+        if r_o_d != 0:
+            parent.insert_node(Node(x_min+l/2, y_min+l/2, z_min, x_min+l, y_min+l, z_min+l/2, parent=parent, children=r_o_d))
+            parent.gals += r_o_d
         
         
+        r_o_u = 0
+        for i in range(len_gal):
+            if x_min + l/2 <= gal_x[i] and gal_x[i] < x_min + l and \
+               y_min + l/2 <= gal_y[i] and gal_y[i] < y_min + l and \
+               z_min + l/2 <= gal_z[i] and gal_z[i] < z_min + l :
+                   r_o_u = r_o_u + 1
+        if r_o_u != 0:
+            parent.insert_node(Node(x_min+l/2, y_min+l/2, z_min+l/2, x_min+l, y_min+l, z_min+l, parent=parent, children=r_o_u))
+            parent.gals += r_o_u
+        
+            
         
     
         
