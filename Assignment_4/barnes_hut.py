@@ -32,7 +32,7 @@ class galaxy:
         
 class Node:
     
-    def __init__(self, x_min, y_min, z_min, x_max, y_max, z_max, gals=None, parent):
+    def __init__(self, x_min, y_min, z_min, x_max, y_max, z_max, parent, gals):
         '''
         Summary:
         Initializes a node (cube) with corner (x,y,z) that extends in
@@ -249,12 +249,21 @@ class Tree:
         ## I'm sure it could be done, but it seems the brute force
         ## method is the best way for me to attack this. 
         
+        ## This function is quite verbose. I'll comment the first instance
+        ## and leave the rest uncommented. The functionality is identical so
+        ## this shouldn't cause too much confusion.
+        
+        ## Initially, this node has 0 galaxies.
         l_i_d = 0 
         for i in range(len_gal):
+            ## Loop over the galaxies and place them into the 
+            ## proper nodes based on the galaxies coordinates.
             if x_min <= gal_x[i] and gal_x[i] < x_min + l/2 and \
                y_min <= gal_y[i] and gal_y[i] < y_min + l/2 and \
                z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
-                   l_i_d = l_i_d + 1    
+                   l_i_d = l_i_d + 1   
+        ## If there are galaxies in this node, we need to define it as a 
+        ## node object so we can calculate important quantites, com, accel, etc...
         if l_i_d != 0:
             parent.insert_node(Node(x_min, y_min, z_min, x_min+l/2, y_min+l/2, z_min+l/2, parent=parent, children=l_i_d))
             parent.gals += l_i_d
@@ -324,9 +333,116 @@ class Tree:
         if r_o_u != 0:
             parent.insert_node(Node(x_min+l/2, y_min+l/2, z_min+l/2, x_min+l, y_min+l, z_min+l, parent=parent, children=r_o_u))
             parent.gals += r_o_u
-        
             
+            
+            
+            
+        def update_acceleration(self, node, galaxy):
+            '''
+            Summary:
+            Takes in a node and a particular galaxy and calculates the gravitational
+            acceleration of the galaxy due to the mass of the node.
+            
+            Parameters
+            ----------
+            node : A node object that may contain children or be a leaf.
+            galaxy : the galaxy object that is being accelerated due to the mass
+                     of the node object.
         
-    
-        
-        
+            '''
+            
+            ## Getting the previous acceleration of the galaxy.
+            gal_accel = galaxy.accel
+            
+            ## If the node has no children, it must be a leaf with 1 galaxy.
+            if len(Node.children) == 0:
+                
+                ## Calculate r_vector in each direction.
+                r_x = Node.com[0] - galaxy.x
+                r_y = Node.com[1] - galaxy.y
+                r_z = Node.com[2] - galaxy.z
+                
+                ## Calculate the magnitude of r.
+                r = np.sqrt(r_x**2.0 + r_y**2.0 + r_z**2.0)
+                
+                ## The mass of the node.
+                M = Node.mass
+                
+                ## The threshold for force softening. I chose this to be 1 pc.
+                eps = 0.001
+                
+                ## Implementing force softening as described in Eq. 13 of Michael Lam's
+                ## N-body interactions notes.
+                if r == 0:
+                    gal_accel[0] += 0
+                    gal_accel[1] += 0
+                    gal_accel[2] += 0
+                
+                elif r < eps and r > 0:
+                    gal_accel[0] += G*M*r_x/(r * (r**2 + eps**2))
+                    gal_accel[1] += G*M*r_y/(r * (r**2 + eps**2))
+                    gal_accel[2] += G*M*r_z/(r * (r**2 + eps**2))
+                   
+                elif r > eps:
+                    eps = 0
+                    gal_accel[0] += G*M*r_x/(r * (r**2 + eps**2))
+                    gal_accel[1] += G*M*r_y/(r * (r**2 + eps**2))
+                    gal_accel[2] += G*M*r_z/(r * (r**2 + eps**2))
+                    
+            
+            ## If the node has children, we must either treat the node and all of its 
+            ## children as a single mass point by calculating its center of mass. If the 
+            ## node is close enough, we will calculate the individual masses of the galaxies
+            ## in it or its sub nodes (children).
+            elif len(Node.children) > 0:
+                for sub_node in node.children:
+                    
+                    ## Calculate r_vector in each direction.
+                    r_x = sub_node.com[0] - galaxy.x
+                    r_y = sub_node.com[1] - galaxy.y
+                    r_z = sub_node.com[2] - galaxy.z
+                    
+                    ## Calculate the magnitude of r.
+                    r = np.sqrt(r_x**2.0 + r_y**2.0 + r_z**2.0)
+                    
+                    ## The mass of the node.
+                    M = sub_node.mass
+                    
+                    ## The threshold for force softening. I chose this to be 1 pc.
+                    eps = 0.001
+                    
+                    ## The distance from the galaxy to the center of mass of the node.
+                    ## Simply a redefinition of r to match the descriptions in 
+                    ## the Barnes-Hut notes.
+                    D = r
+                    
+                    ## The length of the node. 
+                    L = sub_node.x_max - sub_node.x_min
+                    
+                    ## The limit of L/D. In other words, if D * theta_lim < L, 
+                    ## we will consider individual members of the group when we 
+                    ## perform our acceleration calculations. If not, we assume we 
+                    ## are far enough away to calculate the node as a single mass point.
+                    theta_lim = 0.5
+                    if L/D > theta_lim:
+                        self.update_acceleration(sub_node, galaxy)
+                        
+                    
+                    else:
+                        if r == 0:
+                            gal_accel[0] += 0
+                            gal_accel[1] += 0
+                            gal_accel[2] += 0
+                        
+                        elif r < eps and r > 0:
+                            gal_accel[0] += G*M*r_x/(r * (r**2 + eps**2))
+                            gal_accel[1] += G*M*r_y/(r * (r**2 + eps**2))
+                            gal_accel[2] += G*M*r_z/(r * (r**2 + eps**2))
+                           
+                        elif r > eps:
+                            eps = 0
+                            gal_accel[0] += G*M*r_x/(r * (r**2 + eps**2))
+                            gal_accel[1] += G*M*r_y/(r * (r**2 + eps**2))
+                            gal_accel[2] += G*M*r_z/(r * (r**2 + eps**2))
+                        
+                        
