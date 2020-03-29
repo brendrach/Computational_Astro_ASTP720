@@ -201,6 +201,7 @@ class Tree:
             
         self.root = Node(x_min, y_min, z_min, x_max)
     
+    
     def make_subnodes(self, parent):
         '''
         Summary:
