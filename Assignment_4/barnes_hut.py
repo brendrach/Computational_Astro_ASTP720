@@ -40,7 +40,7 @@ class galaxy:
         
 class Node:
     
-    def __init__(self, x, y, z, side_len):
+    def __init__(self, x_min, y_min, z_min, x_max, y_max, z_max, parent=None, children=None):
         '''
         Summary:
         Initializes a node (cube) with corner (x,y,z) that extends in
@@ -48,15 +48,19 @@ class Node:
         
         Parameters
         ----------
-        x, y, z : the coordinates of the corner of a node. 
-        side_len : the length of the cube that extends in each direction
-                   a distance, side_len.
+        xyz_min : the minimum range of the global tree
+        xyz_max : the maximum range of the global tree
+        parent : the parent node.
+        children : the number of children the node has.
         '''
         
-        ## Can be thought of as x_min, y_min, z_min
-        self.x = x
-        self.y = y
-        self.z = z
+        
+        self.x_min = x_min
+        self.y_min = y_min
+        self.z_min = z_min
+        self.x_max = x_max
+        self.y_max = y_max
+        self.z_max = z_max
         
         ## The mass of the node.
         self.mass = 0
@@ -67,11 +71,11 @@ class Node:
         ## The list of children in the node, i.e. subnodes.
         self.children = []
         
-        ## The length of the node. This extends from x, y, z.
-        self.l = side_len
-        
         ## The list of galaxies in the node.
         self.galaxies = []
+        
+        if parent is not None:
+            self.parent = parent
         
         
     def insert_galaxy(self, galaxy):
@@ -179,26 +183,49 @@ class Tree:
         self.y_max = y_max
         self.z_max = z_max
         
-        ## All galaxies in the tree.
-        self.galaxies = galaxy_population
+        # The length of the Tree. Must be a cube!
+        self.l = x_max - x_min
         
-        ### EVERYTHING BELOW THIS LINE NEEDS UPDATED!###
-        ################################################
-        ################################################
-        ################################################
-        ################################################
-        ################################################
-        ################################################
+        ## The coordinates of all galaxies in the population of galaxies.
+        self.galaxies_x = galaxy_population[:,0]
+        self.galaxies_y = galaxy_population[:,1]
+        self.galaxies_z = galaxy_population[:,2]
         
-        
+        ## Initialize the global or root node. The side length parameter
+        ## is defined here as x_max. Before we can use the assumption
+        ## that the side length should be x_max, we should first make
+        ## sure that the node will be square as it should be.
+        if x_max != y_max or x_max != z_max or y_max != z_max:
+            exit('You are trying to initialize a non-square node. This \
+                 code will not support non-square nodes')
+            
+        self.root = Node(x_min, y_min, z_min, x_max)
     
-    def make_subnodes(self):
+    def make_subnodes(self, parent):
+        '''
+        Summary:
+        Makes the tree structure reproduce into subnodes based on whether
+        a galaxy is present in the node. 
         
-        x = self.x
-        y = self.y
-        z = self.z
+        Parameters
+        ----------
+        parent: a Tree structure that will serve as the parent node, that we
+                will make subnodes from.
+    
+        '''
         
-        half_length = self.l / 2
+        ## The minimum value of x in the tree structure.
+        x_min = parent.x_min
+        y_min = parent.y_min
+        z_min = parent.z_min
+        
+        ## The length of the node.
+        half_length = parent.l / 2
+        
+        ## The midpoint of each node.
+        midpoint_x = x_min + half_length
+        midpoint_y = y_min + half_length
+        midpoint_z = z_min + half_length
         
         ## in the cube, I will refer to the x axis as going from left to right
         ## y axis in to out
@@ -214,20 +241,19 @@ class Tree:
         ## r_o_d
         ## r_o_u
         
-        l_i_d = Node(x, y, z, half_length)
-        l_i_u = Node(x, y, z+half_length, half_length)
-        r_i_d = Node(x+half_length, y, z, half_length)
-        r_i_u = Node(x+half_length, y, z+half_length, half_length)
-        l_o_d = Node(x, y+half_length, z, half_length)
-        l_o_u = Node(x, y+half_length, z+half_length, half_length)
-        r_o_d = Node(x+half_length, y+half_length, z, half_length)
-        r_o_u = Node(x+half_length, y+half_length, z+half_length, half_length)
+        l_i_d = 0 #Node(x, y, z, half_length)
         
-        self.children = [l_i_d, l_i_u, r_i_d, r_i_u, l_o_d, l_o_u, r_o_d, r_o_u]
+        for i in range(len()) 
         
-        for i in range(0, len(self.children)):
-            if self.children[i].galaxy_presence(self.galaxies):
-                self.children[i].add_galaxy(self.galaxies)
+        l_i_u = 0 #Node(x, y, z+half_length, half_length)
+        r_i_d = 0 #Node(x+half_length, y, z, half_length)
+        r_i_u = 0 #Node(x+half_length, y, z+half_length, half_length)
+        l_o_d = 0 #Node(x, y+half_length, z, half_length)
+        l_o_u = 0 #Node(x, y+half_length, z+half_length, half_length)
+        r_o_d = 0 #Node(x+half_length, y+half_length, z, half_length)
+        r_o_u = 0 #Node(x+half_length, y+half_length, z+half_length, half_length)
+        
+        
         
     
         
