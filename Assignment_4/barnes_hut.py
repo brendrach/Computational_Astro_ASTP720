@@ -9,440 +9,257 @@ from cosmolopy import constants
 ## converting astropy's G to the correct unit system.
 G = constants.G_const_Mpc_Msun_s
 
-class galaxy:
-    
-    
-    def __init__(self, x_coord, y_coord, z_coord, mass = 1e12):
-        '''
-        Summary:
-        Initializes a galaxy with given coordinates and mass.
-        
-        Parameters
-        ----------
-        xyz_coord : the coordinates for the galaxy. 
-        mass : the mass of the galaxy.
-        '''
-        self.x = x_coord
-        self.y = y_coord
-        self.z = z_coord
-        self.mass = mass
-        self.coords = [self.x, self.y, self.z]
-        self.accel = [0,0,0]
-        
-        
-class Node:
-    
-    def __init__(self, x_min, y_min, z_min, x_max, y_max, z_max, parent, gals):
-        '''
-        Summary:
-        Initializes a node (cube) with corner (x,y,z) that extends in
-        each direction a side length (side_len).
-        
-        Parameters
-        ----------
-        xyz_min : the minimum range of the global tree
-        xyz_max : the maximum range of the global tree
-        parent : the parent node.
-        gals : the number of galaxies the node has.
-        '''
-        
-        
-        self.x_min = x_min
-        self.y_min = y_min
-        self.z_min = z_min
-        self.x_max = x_max
-        self.y_max = y_max
-        self.z_max = z_max
-        
-        ## The mass of the node.
-        self.mass = 0
-        
-        ## The center of mass of the node. 
-        self.com = [0,0,0]
-        
-        ## The list of children in the node, i.e. subnodes.
-        self.children = []
-        
-        ## The list of galaxies in the node.
-        self.galaxies = []
-        
-        self.parent = parent
-            
-        self.gals = gals
-        
-        
-    def insert_galaxy(self, galaxy):
-        '''
-        Summary:
-        Inserts a galaxy into the node object.
-        
-        Parameters
-        ----------
-        galaxy: the galaxy we are adding to the node object.
-        '''
-        
-        ## Append the individual galaxy to the list of galaxies in the node.
-        self.galaxies.append(galaxy)
-        
-    
-    def insert_node(self, sub_node):
-        '''
-        Summary:
-        Inserts a sub node into the parent node.
-        
-        Parameters
-        ----------
-        sub_node : the node object that will be added to the parent node.
-        
-        '''
-              
-        ## Append the child node to the list of nodes under the parent.
-        self.children.append(sub_node)
-        
-        
-    def center_mass_calc(self):
-        '''
-        Summary:
-        
-        Calculates the center of mass of the node object.
-        '''
-        
-        ## If our node has children, we have to calculate the 
-        ## center of mass of all the child nodes.
-        if len(self.children) > 0:
-            
-            ## Loop through the sub nodes in the parent node.
-            for sub_nodes in self.children:
-                
-                ## In each node, recursively calculate the center of mass
-                ## of the node.
-                sub_node_com = sub_nodes.center_mass_calc()
-                
-                ## Store the center of mass coordinates and mass
-                ## of each sub_node. 
-                x_sub_com = sub_node_com[0]
-                y_sub_com = sub_node_com[1]
-                z_sub_com = sub_node_com[2]
-                M_sub = sub_node_com[3]
-                
-                ## Use the center of mass of each sub node to calculate
-                ## the center of mass of the parent node.
-                self.com[0] += x_sub_com * M_sub
-                self.com[1] += y_sub_com * M_sub
-                self.com[2] += z_sub_com * M_sub
-                self.mass += M_sub
-            
-            ## Right now, self.com isn't truly the center of mass. We
-            ## still need to divide by the total mass. 
-            self.com[0] = self.com[0] / self.mass
-            self.com[1] = self.com[1] / self.mass
-            self.com[2] = self.com[2] / self.mass
-            
-            return self.com[0], self.com[1], self.com[2], self.mass
-        
-        ## If our node has no children, then 
-        ## the center of mass, com, and coords, x, y, z, all will be 
-        ## the properties of the single galaxy in the node or 0 if
-        ## no galaxy is present.
-        elif len(self.children) == 0:
-            self.com[0] = self.galaxies[0].x
-            self.com[1] = self.galaxies[0].y
-            self.com[2] = self.galaxies[0].z
-            
-            return self.galaxies[0].x, self.galaxies[0].y, self.galaxies[0].z, self.galaxies[0].mass
-        
-class Tree:
+## Compute step size. In order to be consistent in our units, 
+## we will have to use a step_size in seconds. However, it is built
+## to accept a simple input of step
+step_size_in_years = 10000000
+step_size = (step_size_in_years * u.yr).to(u.s).value
 
-    def __init__(self, x_min, x_max, y_min, y_max, z_min, z_max, galaxy_population):
+## Galaxy mass - we are assuming all galaxies are 1e12 Solar Masses
+M = 1e12
+
+## The limit of L/D where L is the dimensions of the node and 
+## D is the distance from a given galaxy to that Node.
+## If D * theta_lim < L, we will consider individual members of the group when we 
+## perform our acceleration calculations. If not, we assume we 
+## are far enough away to calculate the node as a single mass point.
+theta_lim = 0.7
+
+## The threshold for force softening. If the distance to a neighboring node or
+## galaxies COM is less than this value, we will compute the acceleration 
+## with a softening term, eps, to avoid singularities or runaway accelerations.
+eps = 0.001
+
+
+class Tree:
+    def __init__(self, origin, size, masses, points, ids, leaves=[]):
         '''
         Summary:
         Initializes a tree structure that will serve as a global node
-        within which all galaxies will reside. It will then be parsed
-        with the node class.
+        within which all galaxies will reside. We will add galaxies to the 
+        structure and reproduce nodes until each node only holds one
+        galaxy. Said another way, we will reproduce until we reach only leaves.
         
         Parameters
         ----------
-        xyz_min : the minimum range of the global tree
-        xyz_max : the maximum range of the global tree
-        galaxy_population : a list of galaxies and their coordinates.
+        origin : the coordinates of the center of the node.
+        masses : the array of masses. In our case it is easy, we are assuming all galaxies
+                 have a mass of 1e12. However, it is still good to include this parameter for
+                 future generalization.
+        points : An array of coordinate points.
+        ids : the identifiers of each node in the Tree. Helps to keep track of where
+              each parent and child belongs.
+        leaves : keeping track of when a node reach a leaf. This is our goal after all.
     
         '''
         
-        ## Described above
-        self.x_min = x_min
-        self.y_min = y_min
-        self.z_min = z_min
-        self.x_max = x_max
-        self.y_max = y_max
-        self.z_max = z_max
+        ## The coordinates of the center of the node. 
+        self.origin = origin
         
-        # The length of the Tree. Must be a cube!
-        self.l = x_max - x_min
+        ## The side length of the node.
+        self.size = size
         
-        ## The coordinates of all galaxies in the population of galaxies.
-        self.galaxies_x = galaxy_population[:,0]
-        self.galaxies_y = galaxy_population[:,1]
-        self.galaxies_z = galaxy_population[:,2]
-        
-        ## Initialize the global or root node. The side length parameter
-        ## is defined here as x_max. Before we can use the assumption
-        ## that the side length should be x_max, we should first make
-        ## sure that the node will be square as it should be.
-        if x_max != y_max or x_max != z_max or y_max != z_max:
-            exit('You are trying to initialize a non-square node. This \
-                 code will not support non-square nodes')
+        ## How many children each node has. Starting from 0.
+        self.children = []
+ 
+        ## Check if we only have 1 point in the node. If we do, we can easily calculate
+        ## the center of mass, total mass, attribute an id, and calculate the gravitational
+        ## acceleration at that point.
+        if len(points) == 1:
             
-        self.root = Node(x_min, y_min, z_min, x_max)
-    
-    
-    def make_subnodes(self, parent):
+            ## Store the fact that we've reached a leaf
+            leaves.append(self)
+            
+            ## Once we've reached a leaf, the center of mass, mass, 
+            ## and acceleration do not even require computations. 
+            self.COM = points[0]
+            self.mass = masses[0]
+            self.id = ids[0]
+            self.g = np.zeros(3)       
+        else:
+            ## If there are more than 1 galaxy in the node, we have to 
+            ## make the node reproduce. 
+            self.Reproduce(points, masses, ids, leaves)
+ 
+            ## We can now sum the mass and position vectors to compute the 
+            ## total mass and center of mass for each node. 
+            com_total = np.zeros(3)
+            m_total = 0.  
+            for child in self.children:
+                ## Find the mass of each child.
+                m = child.mass
+                
+                ## Find the center of mass of each child.
+                com = child.COM
+                
+                ## Sum all the masses in a node.
+                m_total += m
+                
+                ## Find the center of mass vector for a node.
+                com_total += com * m  
+            
+            self.mass = m_total
+            self.COM = com_total / self.mass  
+ 
+    def Reproduce(self, points, masses, ids, leaves):
         '''
         Summary:
-        Makes the tree structure reproduce into subnodes based on whether
-        a galaxy is present in the node. 
+        Takes a Node and causes it to reproduce. i.e. add children. 
         
         Parameters
         ----------
-        parent: a Tree structure that will serve as the parent node, that we
-                will make subnodes from.
+        masses : the array of masses. In our case it is easy, we are assuming all galaxies
+                 have a mass of 1e12. However, it is still good to include this parameter for
+                 future generalization.
+        points : An array of coordinate points.
+        ids : the identifiers of each node in the Tree. Helps to keep track of where
+              each parent and child belongs.
+        leaves : keeping track of when a node reach a leaf. This is our goal after all.
     
         '''
         
-        ## The minimum value of x in the tree structure.
-        x_min = parent.x_min
-        y_min = parent.y_min
-        z_min = parent.z_min
+        ## This is a cool vectorization that seems to be a popular implementation
+        ## if Tree-codes. 
         
-        l = parent.l
+        ## We identify all points that are above the midpoint or below the midpoint.
+        ## For example, if the origin is 5 and the first point is 4, octant_index
+        ## will store a False in place of the actual coordinate. This way, we 
+        ## can easily and quickly narrow down where each galaxy belongs in the 
+        ## reproduction structure.
+        child_index = (points > self.origin)
         
-        ## Load the galaxies in the parent. 
-        gal_x = self.galaxies_x 
-        gal_y = self.galaxies_y
-        gal_z = self.galaxies_z 
+        ## Loop over the 8 children.
+        for i in range(2): 
+            for j in range(2):
+                for k in range(2):
+                    
+                    ## Check to see if the child_index is True or False. 
+                    ## If True, the points at that index belong in the child node.
+                    ## If False, the points belong in a different child node.
+                    in_child_node = np.all(child_index == np.bool_([i,j,k]), axis=1)
+                    
+                    ## Some child nodes may not have any galaxies.
+                    if not np.any(in_child_node): 
+                        continue
+                    
+                    ## We now need to set up the children. 
+                    ## In order to initialize them, we need to know where their 
+                    ## origin will be. 
+                    child_offset = 0.5*self.size*(np.array([i,j,k])-0.5) 
+                    
+                    ## Initialize the child nodes.
+                    self.children.append(Tree(self.origin+child_offset,
+                                                 self.size/2,
+                                                 masses[in_child_node],
+                                                 points[in_child_node],
+                                                 ids[in_child_node],
+                                                 leaves))
+  
+def calc_contribution(Node, galaxy):
+    '''
+    Summary:
+    Calculates the gravitational acceleration on a galaxy from
+    a given node. The tree class will walk this structure 
+    to decide if we are far enough away to calculate the COM of a 
+    whole node or if considering individual galaxies is necessary.
+    
+    Parameters
+    ----------
+    Node : A Node object that may contain children or be a leaf.
+    galaxy : the galaxy object that is being accelerated due to the mass
+             of the node object.
+    '''
+    
+    ## The vector that defines the distance between the node object
+    ## and the galaxy.
+    r_vector = Node.COM - galaxy.COM
+    
+    ## The magnitude of the r vector.
+    r_mag = np.sqrt(np.sum(r_vector**2)) 
+    
+    ## If r_mag == 0, we would be calculating the galaxies influence on itself
+    ## That is useless computation. Therefore, we are only concerned with cases 
+    ## where r_mag != 0.
+    if r_mag>0:
         
-        ## We will be looping over the list of galaxies a lot 
-        ## so it is useful to define this.
-        len_gal = len(galaxy_x_coords)
+        # if the node only has one particle or theta is small enough,
+        #  add the field contribution to value stored in node.g
         
-        ## In the cube, I will denote the quantities in the following way: 
-        ## x axis as going from left to right.
-        ## y axis as going from in to out.
-        ## z axis as going from down to up.
-        ## If this is confusing, trying reading my description again
-        ## while looking at a 3D cube. Good example here:
-        ## https://www.researchgate.net/figure/Cube-ABCD-EFGH-on-3D-coordinate-axis-with-a-length-of-the-edge-in-4-units_fig1_323231999
-        ## Therefore, a description like l_i_d means the quadrant of the 
-        ## cube that is on the (x = left, y = inner, z = down) boundary. Or more
-        ## aptly written, the sub-node on the lower left side of the parent.
+        ## If the node only has one galaxy, we can add the contribution
+        ## without further reproduction of the Node.
+        ## We also incorporate force softening. 
+        if (len(Node.children)==0): 
+            ## If r_mag is less than eps, we apply force softening. If not, we
+            ## calculating the acceleration like normal. 
+            if r_mag <= eps:
+                galaxy.g += G * Node.mass * r_vector/(r_mag * (r_mag**2 + eps**2))
+            elif r_mag > eps:
+                galaxy.g += G * Node.mass * r_vector/r_mag**3
         
-        ## so we will have 8 quadrants, denoted 
-        ## l_i_d
-        ## l_i_u
-        ## r_i_d
-        ## r_i_u
-        ## l_o_d
-        ## l_o_u
-        ## r_o_d
-        ## r_o_u
+        ## If the ratio of the length of the node to the distance between the
+        ## the galaxy and the node is below a threshold set above, we can treat
+        ## the entire node like a single mass point concentrated at its COM.
+        ## We also incorporate force softening.
+        elif (Node.size/r_mag < theta_lim):
+            if r_mag <= eps:
+                galaxy.g += G * Node.mass * r_vector/(r_mag * (r_mag**2 + eps**2))
+            elif r_mag > eps:
+                galaxy.g += G * Node.mass * r_vector/r_mag**3
         
-        ## Initially, I spent some time trying to vectorize this. 
-        ## I'm sure it could be done, but it seems the brute force
-        ## method is the best way for me to attack this. 
-        
-        ## This function is quite verbose. I'll comment the first instance
-        ## and leave the rest uncommented. The functionality is identical so
-        ## this shouldn't cause too much confusion.
-        
-        ## Initially, this node has 0 galaxies.
-        l_i_d = 0 
-        for i in range(len_gal):
-            ## Loop over the galaxies and place them into the 
-            ## proper nodes based on the galaxies coordinates.
-            if x_min <= gal_x[i] and gal_x[i] < x_min + l/2 and \
-               y_min <= gal_y[i] and gal_y[i] < y_min + l/2 and \
-               z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
-                   l_i_d = l_i_d + 1   
-        ## If there are galaxies in this node, we need to define it as a 
-        ## node object so we can calculate important quantites, com, accel, etc...
-        if l_i_d != 0:
-            parent.insert_node(Node(x_min, y_min, z_min, x_min+l/2, y_min+l/2, z_min+l/2, parent=parent, children=l_i_d))
-            parent.gals += l_i_d
-            
-            
-        r_i_d = 0
-        for i in range(len_gal):
-            if x_min + l/2 <= gal_x[i] and gal_x[i] < x_min + l and \
-               y_min <= gal_y[i] and gal_y[i] < y_min + l/2 and \
-               z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
-                   r_i_d = r_i_d + 1
-        if r_i_d != 0:
-            parent.insert_node(Node(x_min+l/2, y_min, z_min, x_min+l, y_min+l/2, z_min+l/2, parent=parent, children=r_i_d))
-            parent.gals += r_i_d
-            
-           
-        r_i_u = 0
-        for i in range(len_gal):
-            if x_min + l/2 <= gal_x[i] and gal_x[i] < x_min + l and \
-               y_min <= gal_y[i] and gal_y[i] < y_min + l/2 and \
-               z_min + l/2 <= gal_z[i] and gal_z[i] < z_min + l :
-                   r_i_u = r_i_u + 1
-        if r_i_u != 0:
-            parent.insert_node(Node(x_min+l/2, y_min, z_min+l/2, x_min+l, y_min+l/2, z_min+l, parent=parent, children=r_i_u))
-            parent.gals += r_i_u
-        
+        ## If neither of the above criteria are met, the node needs to 
+        ## split further into children.
+        else:
+            for child in Node.children: calc_contribution(child, galaxy)
+                              
 
-        l_o_d = 0
-        for i in range(len_gal):
-            if x_min <= gal_x[i] and gal_x[i] < x_min + l/2 and \
-               y_min + l/2 <= gal_y[i] and gal_y[i] < y_min + l and \
-               z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
-                   l_o_d = l_o_d + 1
-        if l_o_d != 0:
-            parent.insert_node(Node(x_min, y_min+l/2, z_min, x_min+l/2, y_min+l, z_min+l/2, parent=parent, children=l_o_d))
-            parent.gals += l_o_d
-            
-            
-        l_o_u = 0
-        for i in range(len_gal):
-            if x_min <= gal_x[i] and gal_x[i] < x_min + l/2 and \
-               y_min + l/2 <= gal_y[i] and gal_y[i] < y_min + l and \
-               z_min + l/2 <= gal_z[i] and gal_z[i] < z_min + l :
-                   l_o_u = l_o_u + 1
-        if l_o_u != 0:
-            parent.insert_node(Node(x_min, y_min+l/2, z_min+l/2, x_min+l/2, y_min+l, z_min+l, parent=parent, children=l_o_u))
-            parent.gals += l_o_u
-            
+def calc_accel(points, masses):
+    '''
+    Summary:
+    Calculates the acceleration on each point from all other points. 
+    
+    Parameters
+    ----------
+    points : a list of galaxy coordinates.
+    masses : the mass of each node. 
+    '''
+    
+    ## Calculate the origin in each dimension. 
+    origin = (np.max(points,axis=0)+np.min(points,axis=0))/2
+    
+    ## Calculate the dimensions of the bounding box.
+    dimensions = np.max(np.max(points,axis=0)-np.min(points,axis=0))
+    
+    ## Keeping track of leaves.
+    leaves = []
+    
+    ## Establish the root node and build the tree.
+    root = Tree(origin, dimensions, masses, points, np.arange(len(masses)), leaves)
+ 
+    ## Store the accelerations
+    a = np.empty_like(points)
+    
+    ## Loop over all leaves in the Tree.
+    for i,leaf in enumerate(leaves):
         
-        r_o_d = 0
-        for i in range(len_gal):
-            if x_min + l/2 <= gal_x[i] and gal_x[i] < x_min + l and \
-               y_min + l/2 <= gal_y[i] and gal_y[i] < y_min + l and \
-               z_min <= gal_z[i] and gal_z[i] < z_min + l/2 :
-                   r_o_d = r_o_d + 1
-        if r_o_d != 0:
-            parent.insert_node(Node(x_min+l/2, y_min+l/2, z_min, x_min+l, y_min+l, z_min+l/2, parent=parent, children=r_o_d))
-            parent.gals += r_o_d
-        
-        
-        r_o_u = 0
-        for i in range(len_gal):
-            if x_min + l/2 <= gal_x[i] and gal_x[i] < x_min + l and \
-               y_min + l/2 <= gal_y[i] and gal_y[i] < y_min + l and \
-               z_min + l/2 <= gal_z[i] and gal_z[i] < z_min + l :
-                   r_o_u = r_o_u + 1
-        if r_o_u != 0:
-            parent.insert_node(Node(x_min+l/2, y_min+l/2, z_min+l/2, x_min+l, y_min+l, z_min+l, parent=parent, children=r_o_u))
-            parent.gals += r_o_u
-            
-            
-            
-            
-        def update_acceleration(self, Node, galaxy):
-            '''
-            Summary:
-            Takes in a node and a particular galaxy and calculates the gravitational
-            acceleration of the galaxy due to the mass of the node.
-            
-            Parameters
-            ----------
-            node : A node object that may contain children or be a leaf.
-            galaxy : the galaxy object that is being accelerated due to the mass
-                     of the node object.
-        
-            '''
-            
-            ## Getting the previous acceleration of the galaxy.
-            gal_accel = galaxy.accel
-            
-            ## If the node has no children, it must be a leaf with 1 galaxy.
-            if len(Node.children) == 0:
-                
-                ## Calculate r_vector in each direction.
-                r_x = Node.com[0] - galaxy.x
-                r_y = Node.com[1] - galaxy.y
-                r_z = Node.com[2] - galaxy.z
-                
-                ## Calculate the magnitude of r.
-                r = np.sqrt(r_x**2.0 + r_y**2.0 + r_z**2.0)
-                
-                ## The mass of the node.
-                M = Node.mass
-                
-                ## The threshold for force softening. I chose this to be 1 pc.
-                eps = 0.001
-                
-                ## Implementing force softening as described in Eq. 13 of Michael Lam's
-                ## N-body interactions notes.
-                if r == 0:
-                    gal_accel[0] += 0
-                    gal_accel[1] += 0
-                    gal_accel[2] += 0
-                
-                elif r < eps and r > 0:
-                    gal_accel[0] += G*M*r_x/(r * (r**2 + eps**2))
-                    gal_accel[1] += G*M*r_y/(r * (r**2 + eps**2))
-                    gal_accel[2] += G*M*r_z/(r * (r**2 + eps**2))
-                   
-                elif r > eps:
-                    eps = 0
-                    gal_accel[0] += G*M*r_x/(r * (r**2 + eps**2))
-                    gal_accel[1] += G*M*r_y/(r * (r**2 + eps**2))
-                    gal_accel[2] += G*M*r_z/(r * (r**2 + eps**2))
-                    
-            
-            ## If the node has children, we must either treat the node and all of its 
-            ## children as a single mass point by calculating its center of mass. If the 
-            ## node is close enough, we will calculate the individual masses of the galaxies
-            ## in it or its sub nodes (children).
-            elif len(Node.children) > 0:
-                for sub_node in Node.children:
-                    
-                    ## Calculate r_vector in each direction.
-                    r_x = sub_node.com[0] - galaxy.x
-                    r_y = sub_node.com[1] - galaxy.y
-                    r_z = sub_node.com[2] - galaxy.z
-                    
-                    ## Calculate the magnitude of r.
-                    r = np.sqrt(r_x**2.0 + r_y**2.0 + r_z**2.0)
-                    
-                    ## The mass of the node.
-                    M = sub_node.mass
-                    
-                    ## The threshold for force softening. I chose this to be 1 pc.
-                    eps = 0.001
-                    
-                    ## The distance from the galaxy to the center of mass of the node.
-                    ## Simply a redefinition of r to match the descriptions in 
-                    ## the Barnes-Hut notes.
-                    D = r
-                    
-                    ## The length of the node. 
-                    L = sub_node.x_max - sub_node.x_min
-                    
-                    ## The limit of L/D. In other words, if D * theta_lim < L, 
-                    ## we will consider individual members of the group when we 
-                    ## perform our acceleration calculations. If not, we assume we 
-                    ## are far enough away to calculate the node as a single mass point.
-                    theta_lim = 0.5
-                    if L/D > theta_lim:
-                        self.update_acceleration(sub_node, galaxy)
-                        
-                    
-                    else:
-                        if r == 0:
-                            gal_accel[0] += 0
-                            gal_accel[1] += 0
-                            gal_accel[2] += 0
-                        
-                        elif r < eps and r > 0:
-                            gal_accel[0] += G*M*r_x/(r * (r**2 + eps**2))
-                            gal_accel[1] += G*M*r_y/(r * (r**2 + eps**2))
-                            gal_accel[2] += G*M*r_z/(r * (r**2 + eps**2))
-                           
-                        elif r > eps:
-                            eps = 0
-                            gal_accel[0] += G*M*r_x/(r * (r**2 + eps**2))
-                            gal_accel[1] += G*M*r_y/(r * (r**2 + eps**2))
-                            gal_accel[2] += G*M*r_z/(r * (r**2 + eps**2))
-                        
-                        
+        ## Sum all the accelerations on each galaxy in the array.
+        calc_contribution(root, leaf)  
+        a[leaf.id] = leaf.g
+ 
+    return a
+
+
+def calc_position(galaxies, history_galaxies, accel):
+    '''
+    Summary:
+    Calculate the position of each galaxy in the array after each iteration.
+
+    Parameters
+    ----------
+    galaxies : the coordinate of every galaxy in the current timestep.
+    history_galaxies : the coordinate of every galaxy in the last timestep.
+    accel : the acceleration of each galaxy. Calculated in barnes_hut.py
+    '''
+    
+    new_positions = step_size**2 * accel + 2 * galaxies - history_galaxies
+    
+    return new_positions
