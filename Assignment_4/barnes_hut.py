@@ -12,7 +12,7 @@ G = constants.G_const_Mpc_Msun_s
 ## Compute step size. In order to be consistent in our units, 
 ## we will have to use a step_size in seconds. However, it is built
 ## to accept a simple input of step
-step_size_in_years = 10000000
+step_size_in_years = 1000000
 step_size = (step_size_in_years * u.yr).to(u.s).value
 
 ## Galaxy mass - we are assuming all galaxies are 1e12 Solar Masses
