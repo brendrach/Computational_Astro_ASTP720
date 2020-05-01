@@ -28,11 +28,11 @@ def read_dataset(dataset):
         ## better than numpy's loadtxt. So I use it and convert.
         type_1a = pd.read_csv('type_1a.txt',delimiter='\t')
         type_1a = type_1a.dropna()
+        
+        ## Sort the data by the distance.
+        type_1a = type_1a.sort_values(by=['distanceToSupernova'])
         type_1a = type_1a.to_numpy()
         
-        ## Sort the data by the first column so the 
-        ## galaxies are ordered by their distance.
-        type_1a = type_1a[type_1a[:,0].argsort()]
         
         ## Extract the distance and add some uncertainty to it
         ## Unforunately, some datasets do not provide uncertainties
@@ -45,7 +45,7 @@ def read_dataset(dataset):
         ## velocity as v = z*c.
         redshift = type_1a[:,2]
         velocity = redshift * c
-        velocity_uncert = np.random.uniform(0,10,len(velocity))
+        velocity_uncert = np.random.uniform(0,10,len(velocity))*1000
         
         distance = distance.astype('float64')
         distance_uncert = distance_uncert.astype('float64')
@@ -62,11 +62,10 @@ def read_dataset(dataset):
         ## better than numpy's loadtxt. So I use it and convert.
         SDSS = pd.read_csv('SDSS_lum_distance_cepheids.csv',delimiter='\t')
         SDSS = SDSS.dropna()
-        SDSS = SDSS.to_numpy()
         
-        ## Sort the data by the first column so the 
-        ## galaxies are ordered by their distance.
-        SDSS = SDSS[SDSS[:,0].argsort()]
+        ## Sort the data by the distance.
+        SDSS = SDSS.sort_values(by=['lumDist'])
+        SDSS = SDSS.to_numpy()
         
         ## Extract the distance and add some uncertainty to it
         ## Unforunately, some datasets do not provide uncertainties
@@ -79,7 +78,7 @@ def read_dataset(dataset):
         ## velocity as v = z*c.
         redshift = SDSS[:,1]
         velocity = redshift * c
-        velocity_uncert = np.random.uniform(0,10,len(velocity))
+        velocity_uncert = np.random.uniform(0,10,len(velocity))*1000
         
         distance = distance.astype('float64')
         distance_uncert = distance_uncert.astype('float64')
@@ -96,11 +95,10 @@ def read_dataset(dataset):
         ## better than numpy's loadtxt. So I use it and convert.
         leda = pd.read_csv('leda_distance.csv',delimiter=',')
         leda = leda.dropna()
-        leda = leda.to_numpy()
         
-        ## Sort the data by the first column so the 
-        ## galaxies are ordered by their distance.
-        leda = leda[leda[:,0].argsort()]
+        ## Sort the data by the distance.
+        leda = leda.sort_values(by=['mod0'])
+        leda = leda.to_numpy()
         
         ## Extract the distance and add some uncertainty to it
         ## Unforunately, some datasets do not provide uncertainties
@@ -119,7 +117,7 @@ def read_dataset(dataset):
         ## the recessional velocity is. We calculate the redshift as 
         ## z = v/c
         velocity = leda[:,2]
-        velocity_uncert = np.random.uniform(0,10,len(velocity))
+        velocity_uncert = np.random.uniform(0,10,len(velocity))*1000
         
         distance = distance.astype('float64')
         distance_uncert = distance_uncert.astype('float64')
