@@ -99,7 +99,11 @@ def lnprob(theta, x, y, yerr):
 def MCMC(Nwalker, Ndim, iterations, initial_guess, x, y, yerr):
     '''
     Summary:
-    Define the log likelihood.
+    A Markov Chain Monte Carlo (Metropolis-Hastings Algorithm) 
+    to solve for the best fit paramaters in the model. 
+    
+    I chose to use emcee instead of a hand-written metropolis-hastings
+    algorithm due solely to speed. emcee is incredibly fast.
 
     Parameters
     ----------
