@@ -1,0 +1,12 @@
+In this document you'll find information about the datasets I am using in this project.
+
+type_1a.txt - This is a set of 96 type 1a supernovae that had their distances determined irrespective of their redshift measurement. 
+The redshifts in the dataset were independent measurements of the galaxy containing the SN. They are all taken from the SDSS database.
+Originally compiled by Anneya Golob.
+
+SDSS_lum_distance_cepheids.csv - A set of 1000 cepheid variables that had their luminosity distance determined via the period-luminosity
+relationship. The redshifts in the dataset were independent measurements of the galaxy containing the cepheid. They are all taken from the SDSS database.
+
+leda_distance.csv - A set of 4241 galaxies taken from the HyperLeda catalog. I've searched for all galaxies that have measured
+redshifts and independently measured distances. This is easy to compile by entering the following into their SQL search form:
+SELECT objname, mod0, vgsr WHERE mod0 IS NOT NULL
